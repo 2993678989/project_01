@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhiyou100.mapper.ThemeMapper">
+    <resultMap id="theme" type="com.zhiyou100.model.Theme">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="cover" property="cover"/>
+        <result column="count" property="count"/>
+        <collection property="videos" ofType="Video">
+            <id column="vid" property="id"/>
+            <result column="vname" property="name"/>
+            <result column="desc" property="desc"/>
+            <result column="year" property="year"/>
+            <result column="play" property="play"/>
+            <result column="score" property="score"/>
+            <result column="cover" property="cover"/>
+            <result column="mold_id" property="moldId"/>
+            <result column="area_id" property="areaId"/>
+        </collection>
+    </resultMap>
+    <insert id="add" parameterType="Theme">
+        insert into theme
+        values(null,#{name},#{cover},0)
+    </insert>
+    <delete id="deleteById" parameterType="int">
+        delete from theme where id = #{id}
+    </delete>
+    <update id="update" parameterType="Theme">
+        update theme
+        <set>
+            <if test="name!=null">
+                name = #{name},
+            </if>
+            <if test="cover!=null">
+                cover = #{cover},
+            </if>
+            <if test="count!=null">
+                count = #{count}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <update id="updateCount" parameterType="Theme">
+        update theme
+        set count = #{count}
+        where id = #{id}
+    </update>
+    <select id="queryAll" resultMap="theme">
+        select * from theme
+    </select>
+    <select id="findById" parameterType="int" resultMap="theme">
+        select * from theme where id = #{id}
+    </select>
+    <select id="findQueryAll" resultMap="theme">
+        select t.*,v.id vid, v.name vname
+        from theme t
+        left join theme_video tv
+        on t.id = tv.theme_id
+        left join video v
+        on tv.video_id = v.id
+    </select>
+    <select id="findQueryAllById" parameterType="int" resultMap="theme">
+        select t.*,v.id vid, v.name vname
+        from theme t
+        left join theme_video tv
+        on t.id = tv.theme_id
+        left join video v
+        on tv.video_id = v.id
+        where t.id = #{id}
+    </select>
+    <select id="findCount" parameterType="int" resultMap="theme">
+        select t.id,count(v.id) count
+        from theme t
+        left join theme_video tv
+        on t.id = tv.theme_id
+        left join video v
+        on tv.video_id = v.id
+        where t.id = #{id}
+    </select>
+</mapper>

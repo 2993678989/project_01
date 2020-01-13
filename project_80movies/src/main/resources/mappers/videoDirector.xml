@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhiyou100.mapper.VideoDirectorMapper">
+    <resultMap id="videoDirector" type="com.zhiyou100.model.VideoDirector">
+        <id column="id" property="id"/>
+        <result column="video_id" property="videoId"/>
+        <result column="director_id" property="directorId"/>
+    </resultMap>
+    <insert id="add" parameterType="VideoDirector">
+        insert into video_director
+        values(null,#{videoId},#{directorId})
+    </insert>
+    <delete id="deleteById" parameterType="int">
+        delete from video_director where id = #{id}
+    </delete>
+    <update id="update" parameterType="VideoDirector">
+        update video_director
+        <set>
+            <if test="videoId!=null">
+                video_id = #{videoId},
+            </if>
+            <if test="directorId!=null">
+                director_id = #{directorId},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <select id="queryAll" resultMap="videoDirector">
+        select * from video_director
+    </select>
+    <select id="findById" parameterType="int" resultMap="videoDirector">
+        select * from video_director where id = #{id}
+    </select>
+    <select id="findByVideoId" parameterType="int" resultMap="videoDirector">
+        select * from video_director where video_id = #{videoId}
+    </select>
+    <delete id="deleteVideoDirector" parameterType="VideoDirector">
+        delete from video_director
+        where director_id = #{directorId} and video_id = #{videoId}
+    </delete>
+
+</mapper>

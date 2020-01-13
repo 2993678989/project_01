@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhiyou100.mapper.ThemeVideoMapper">
+    <resultMap id="themeVideo" type="com.zhiyou100.model.ThemeVideo">
+        <id column="id" property="id"/>
+        <result column="theme_id" property="themeId"/>
+        <result column="video_id" property="videoId"/>
+    </resultMap>
+    <insert id="add" parameterType="ThemeVideo">
+        insert into theme_video
+        values(null,#{themeId},#{videoId})
+    </insert>
+    <delete id="deleteById" parameterType="int">
+        delete from theme_video where id = #{id}
+    </delete>
+    <delete id="deleteByVideoId" parameterType="int">
+        delete from theme_video where video_id = #{videoId}
+    </delete>
+    <delete id="deleteByThemeVideo" parameterType="ThemeVideo">
+        delete from theme_video where video_id = #{videoId} and theme_id = #{themeId}
+    </delete>
+    <update id="update" parameterType="ThemeVideo">
+        update theme_video
+        <set>
+            <if test="themeId!=null">
+                theme_id = #{themeId},
+            </if>
+            <if test="videoId!=null">
+                video_id = #{videoId}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <select id="queryAll" resultMap="themeVideo">
+        select * from theme_video
+    </select>
+    <select id="findById" parameterType="int" resultMap="themeVideo">
+        select * from theme_video where id = #{id}
+    </select>
+    <select id="findByThemeId" parameterType="int" resultMap="themeVideo">
+        select *
+        from theme_video tv
+        left join video v
+        on tv.video_id = v.id
+        where theme_id = #{themeId}
+    </select>
+
+</mapper>

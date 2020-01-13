@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <settings>
+        <setting name="cacheEnabled" value="true"/>
+        <setting name="logImpl" value="STDOUT_LOGGING" />
+    </settings>
+	<typeAliases>
+        <typeAlias type="com.zhiyou100.model.Actor" alias="Actor"/>
+        <typeAlias type="com.zhiyou100.model.Admin" alias="Admin"/>
+        <typeAlias type="com.zhiyou100.model.Area" alias="Area"/>
+        <typeAlias type="com.zhiyou100.model.Banner" alias="Banner"/>
+        <typeAlias type="com.zhiyou100.model.Channel" alias="Channel"/>
+        <typeAlias type="com.zhiyou100.model.Collection" alias="MyCollection"/>
+        <typeAlias type="com.zhiyou100.model.Director" alias="Director"/>
+        <typeAlias type="com.zhiyou100.model.History" alias="History"/>
+        <typeAlias type="com.zhiyou100.model.Hot" alias="Hot"/>
+        <typeAlias type="com.zhiyou100.model.Line" alias="Line"/>
+        <typeAlias type="com.zhiyou100.model.Message" alias="Message"/>
+        <typeAlias type="com.zhiyou100.model.Mold" alias="Mold"/>
+        <typeAlias type="com.zhiyou100.model.Movie" alias="Movie"/>
+        <typeAlias type="com.zhiyou100.model.Speaker" alias="Speaker"/>
+        <typeAlias type="com.zhiyou100.model.Theme" alias="Theme"/>
+        <typeAlias type="com.zhiyou100.model.ThemeVideo" alias="ThemeVideo"/>
+        <typeAlias type="com.zhiyou100.model.User" alias="User"/>
+        <typeAlias type="com.zhiyou100.model.Video" alias="Video"/>
+        <typeAlias type="com.zhiyou100.model.VideoActor" alias="VideoActor"/>
+        <typeAlias type="com.zhiyou100.model.VideoDirector" alias="VideoDirector"/>
+	</typeAliases>
+    <plugins>
+        <!-- com.github.pagehelper为PageHelper类所在包名 -->
+        <plugin interceptor="com.github.pagehelper.PageInterceptor">
+
+        </plugin>
+    </plugins>
+</configuration>

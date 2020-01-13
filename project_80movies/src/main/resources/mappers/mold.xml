@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhiyou100.mapper.MoldMapper">
+    <resultMap id="mold" type="com.zhiyou100.model.Mold">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="channel_id" property="channelId"/>
+        <collection property="channels" ofType="Channel">
+            <id column="cid" property="id"/>
+            <result column="cname" property="name"/>
+            <result column="cyear" property="year"/>
+            <result column="cShowCount" property="showCount"/>
+        </collection>
+    </resultMap>
+    <insert id="add" parameterType="Mold">
+        insert into mold
+        values(null,#{name},#{channelId})
+    </insert>
+    <delete id="deleteById" parameterType="int">
+        delete from mold where id = #{id}
+    </delete>
+    <delete id="deleteByChannelId" parameterType="int">
+        delete from mold where channel_id = #{channelId}
+    </delete>
+    <update id="update" parameterType="Mold">
+        update mold
+        <set>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="channelId != null">
+                channel_id = #{channelId}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <select id="queryAll" resultMap="mold">
+        select * from mold
+    </select>
+    <select id="findById" parameterType="int" resultMap="mold">
+        select * from mold where id = #{id}
+    </select>
+    <select id="findByChannelId" parameterType="int" resultMap="mold">
+        select * from mold where channel_id = #{channelId}
+    </select>
+    <select id="findMoldChannel" resultMap="mold">
+        select m.*,c.id cid,c.name cname,c.year cyear,c.show_count cShowCount from mold m
+        left join channel c
+        on m.channel_id = c.id
+    </select>
+    <select id="findMoldChannelById" parameterType="int" resultMap="mold">
+        select m.*,c.id cid,c.name cname,c.year cyear,c.show_count cShowCount
+        from mold m
+        left join channel c
+        on m.channel_id = c.id
+        where m.id = #{id}
+    </select>
+</mapper>

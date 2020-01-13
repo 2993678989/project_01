@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhiyou100.mapper.ChannelMapper">
+    <resultMap id="channel" type="com.zhiyou100.model.Channel">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="year" property="year"/>
+        <result column="show_count" property="showCount"/>
+        <collection property="areas" ofType="com.zhiyou100.model.Area">
+            <id column="aid" property="id"/>
+            <result column="aname" property="name"/>
+            <result column="achannel_id" property="channelId"/>
+        </collection>
+        <collection property="molds" ofType="com.zhiyou100.model.Mold">
+            <id column="mid" property="id"/>
+            <result column="mname" property="name"/>
+            <result column="mchannel_id" property="channelId"/>
+        </collection>
+        <collection property="hots" ofType="Hot">
+            <id column="hid" property="id"/>
+            <result column="hcover" property="cover"/>
+            <result column="hvideo_id" property="videoId"/>
+        </collection>
+        <collection property="videos" ofType="Video">
+            <id column="vid" property="id"/>
+            <result column="vname" property="name"/>
+            <result column="vplay" property="play"/>
+            <result column="vyear" property="year"/>
+            <result column="vcover" property="cover"/>
+            <result column="vscore" property="score"/>
+        </collection>
+        <collection property="actors" ofType="Actor">
+            <id column="acid" property="id"/>
+            <result column="acname" property="name"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="onstage" type="com.zhiyou100.model.Channel">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="year" property="year"/>
+        <result column="show_count" property="showCount"/>
+        <collection property="areas" ofType="com.zhiyou100.model.Area">
+            <id column="aid" property="id"/>
+            <result column="aname" property="name"/>
+            <result column="achannel_id" property="channelId"/>
+        </collection>
+        <collection property="molds" ofType="com.zhiyou100.model.Mold">
+            <id column="mid" property="id"/>
+            <result column="mname" property="name"/>
+            <result column="mchannel_id" property="channelId"/>
+        </collection>
+        <collection property="hots" ofType="Hot">
+            <id column="hid" property="id"/>
+            <result column="hcover" property="cover"/>
+            <result column="hvideo_id" property="videoId"/>
+        </collection>
+        <collection property="videos" ofType="Video">
+            <id column="vid" property="id"/>
+            <result column="vname" property="name"/>
+            <result column="vplay" property="play"/>
+            <result column="vyear" property="year"/>
+            <result column="vcover" property="cover"/>
+            <result column="vscore" property="score"/>
+            <collection property="actors" ofType="Actor">
+                <id column="acid" property="id"/>
+                <result column="acname" property="name"/>
+            </collection>
+        </collection>
+    </resultMap>
+    <insert id="add" parameterType="Channel">
+        insert into `channel`
+        values(null,#{name},#{year},#{showCount})
+    </insert>
+    <delete id="deleteById" parameterType="int">
+        delete from `channel` where id = #{id}
+    </delete>
+    <update id="update" parameterType="Channel">
+        update `channel`
+        <set>
+            <if test="name!=null">
+                name = #{name},
+            </if>
+            <if test="year!=null">
+                year = #{year},
+            </if>
+            <if test="showCount!=null">
+                show_count = #{showCount},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <select id="queryAll" resultMap="channel">
+        select * from `channel`
+    </select>
+    <select id="findById" parameterType="int" resultMap="channel">
+        select * from `channel` where id = #{id}
+    </select>
+    <select id="queryChannelAreaMold" resultMap="channel">
+        select c.*,a.id aid,a.name aname,a.channel_id achannel_id,
+        m.id mid,m.name mname,m.channel_id mchannel_id
+        from `channel` c
+        left join area a
+        on c.id = a.channel_id
+        left join mold m
+        on c.id = m.channel_id
+
+    </select>
+    <select id="queryChannelAreaMoldById" resultMap="channel" parameterType="int">
+        select c.*,a.id aid,a.name aname,a.channel_id achannel_id,
+        m.id mid,m.name mname,m.channel_id mchannel_id
+        from `channel` c
+        left join area a
+        on c.id = a.channel_id
+        left join mold m
+        on c.id = m.channel_id
+        where c.id = #{id}
+    </select>
+    <select id="findChannelAndMoldAndVideoPlay" resultMap="channel">
+        select c.*,m.id mid,m.name mname,v.id vid,v.name vname,v.play vplay,v.cover vcover,h.id hid,h.cover hcover
+        from channel c
+        left join mold m
+        on c.id = m.channel_id
+        LEFT JOIN video v
+        on m.id = v.mold_id
+        LEFT JOIN hot h
+        on v.id = h.video_id
+        ORDER BY c.id,v.play desc
+    </select>
+    <select id="findChannelAndMoldAndVideoAndActor" resultMap="onstage">
+        select c.*,m.id mid,m.name mname,v.id vid,v.name vname,v.cover vcover,v.score vscore,v.year vyear,ac.id acid,ac.name acname
+        from channel c
+        left join mold m
+        on c.id = m.channel_id
+        LEFT JOIN video v
+        on m.id = v.mold_id
+		LEFT JOIN video_actor va
+		on v.id = va.video_id
+		LEFT JOIN actor ac
+		on va.actor_id = ac.id
+        ORDER BY c.id,v.year desc
+    </select>
+    <select id="findChannelAndHot" resultMap="channel">
+        select *
+        from channel c
+        left join mold m
+        on c.id = m.channel_id
+        LEFT JOIN video v
+        on m.id = v.mold_id
+        LEFT JOIN hot h
+        on v.id = h.video_id
+        ORDER BY c.id
+    </select>
+    <select id="selectVideoByChannelId" resultMap="onstage">
+        select c.*,m.id mid,m.name mname,a.id aid,a.name aname,v.id vid,v.name vname,v.cover vcover,v.score vscore,v.year vyear,ac.id acid,ac.name acname
+        from channel c
+        left join mold m
+        on c.id = m.channel_id
+        left join area a
+        on c.id = a.channel_id
+        LEFT JOIN video v
+        on m.id = v.mold_id
+		LEFT JOIN video_actor va
+		on v.id = va.video_id
+		LEFT JOIN actor ac
+		on va.actor_id = ac.id
+		<where>
+            c.id = #{id}
+            <if test="moldId!=null">
+            and   v.mold_id = #{moldId}
+            </if>
+            <if test="areaId!=null">
+            and    v.area_id = #{areaId}
+            </if>
+            <if test="year!=null">
+            and    v.year = #{year}
+            </if>
+        </where>
+    </select>
+</mapper>

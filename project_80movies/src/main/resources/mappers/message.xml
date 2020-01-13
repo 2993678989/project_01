@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhiyou100.mapper.MessageMapper">
+    <resultMap id="message" type="com.zhiyou100.model.Message">
+        <id column="id" property="id"/>
+        <result column="content" property="content"/>
+        <result column="status" property="status"/>
+        <result column="user_id" property="userId"/>
+        <collection property="user" ofType="User">
+            <id column="uid" property="id"/>
+            <result column="uaccount" property="account"/>
+        </collection>
+    </resultMap>
+    <insert id="add" parameterType="Message">
+        insert into message
+        values(null,#{content},#{status},#{userId})
+    </insert>
+    <delete id="deleteById" parameterType="int">
+        delete from message where id = #{id}
+    </delete>
+    <update id="update" parameterType="Message">
+        update message
+        <set>
+            <if test="content !=null">
+                content = #{content},
+            </if>
+            <if test="status !=null">
+                status = #{status},
+            </if>
+            <if test="userId !=null">
+                user_id = #{userId}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <select id="queryAll" resultMap="message">
+        select * from message
+    </select>
+    <select id="findById" resultMap="message">
+        select * from message where id = #{id}
+    </select>
+    <select id="queryMessageAndUser" resultMap="message">
+        select m.*,u.id uid,u.account uaccount
+        from message m
+        left join user u
+        on m.user_id = u.id
+    </select>
+
+</mapper>

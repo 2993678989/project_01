@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhiyou100.mapper.DirectorMapper">
+    <resultMap id="director" type="com.zhiyou100.model.Director">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <collection property="videos" ofType="Video">
+            <id column="id" property="id"/>
+            <result column="name" property="name"/>
+            <result column="desc" property="desc"/>
+            <result column="year" property="year"/>
+            <result column="play" property="play"/>
+            <result column="score" property="score"/>
+            <result column="cover" property="cover"/>
+            <result column="mold_id" property="moldId"/>
+            <result column="area_id" property="areaId"/>
+        </collection>
+    </resultMap>
+    <insert id="add" parameterType="Director">
+        insert into director
+        values(null,#{name})
+    </insert>
+    <delete id="deleteById" parameterType="int">
+        delete from director where id = #{id}
+    </delete>
+    <update id="update" parameterType="Director">
+        update director
+        set name = #{name}
+        where id = #{id}
+    </update>
+    <select id="queryAll" resultMap="director">
+        select * from director
+    </select>
+    <select id="findById" parameterType="int" resultMap="director">
+        select * from director where id = #{id}
+    </select>
+    <select id="queryAllNot" resultMap="director" parameterType="int">
+        SELECT * FROM director
+        WHERE LOCATE(id,(
+        SELECT GROUP_CONCAT(d.id) FROM director d
+        INNER JOIN video_director va ON d.id = va.director_id
+        WHERE va.video_id = #{id}
+        )) = 0
+    </select>
+</mapper>

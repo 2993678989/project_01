@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhiyou100.mapper.VideoMapper">
+    <resultMap id="video" type="com.zhiyou100.model.Video">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="desc" property="desc"/>
+        <result column="year" property="year"/>
+        <result column="play" property="play"/>
+        <result column="score" property="score"/>
+        <result column="cover" property="cover"/>
+        <result column="mold_id" property="moldId"/>
+        <result column="area_id" property="areaId"/>
+        <collection property="speakers" ofType="Speaker">
+            <id column="id" property="id"/>
+            <result column="context" property="context"/>
+            <result column="user_id" property="userId"/>
+            <result column="video_id" property="videoId"/>
+            <result column="status" property="status"/>
+        </collection>
+        <collection property="actors" ofType="Actor">
+            <id column="aid" property="id"/>
+            <result column="aname" property="name"/>
+            <result column="desc" property="desc"/>
+        </collection>
+        <collection property="banners" ofType="Banner">
+            <id column="id" property="id"/>
+            <result column="pic" property="pic"/>
+            <result column="video_id" property="videoId"/>
+        </collection>
+        <collection property="hots" ofType="Hot">
+            <id column="id" property="id"/>
+            <result column="cover" property="cover"/>
+            <result column="video_id" property="videoId"/>
+        </collection>
+        <collection property="directors" ofType="Director">
+            <id column="did" property="id"/>
+            <result column="dname" property="name"/>
+        </collection>
+        <collection property="molds" ofType="Mold">
+            <id column="mid" property="id"/>
+            <result column="mname" property="name"/>
+            <result column="channel_id" property="channelId"/>
+        </collection>
+        <collection property="areas" ofType="Area">
+            <id column="arid" property="id"/>
+            <result column="arname" property="name"/>
+            <result column="channel_id" property="channelId"/>
+        </collection>
+        <collection property="themes" ofType="Theme">
+            <id column="id" property="id"/>
+            <result column="name" property="name"/>
+        </collection>
+        <collection property="movies" ofType="Movie">
+            <id column="id" property="id"/>
+            <result column="name" property="name"/>
+            <result column="video_id" property="videoId"/>
+            <result column="line_id" property="lineId"/>
+            <result column="url" property="url"/>
+        </collection>
+
+
+    </resultMap>
+    <insert id="add" parameterType="Area">
+        insert into video
+        values (null,#{name},#{desc},#{year},#{play},#{score},#{cover},#{moldId},#{areaId})
+    </insert>
+    <delete id="deleteById" parameterType="int">
+        delete from video where id = #{id}
+    </delete>
+    <update id="update" parameterType="Video">
+        update video
+        <set>
+            <if test="name != null">
+                `name` = #{name},
+            </if>
+            <if test="desc != null">
+                `desc` = #{desc},
+            </if>
+            <if test="year != null">
+                `year` = #{year},
+            </if>
+            <if test="play != null">
+                play = #{play},
+            </if>
+            <if test="score != null">
+                score = #{score},
+            </if>
+            <if test="cover != null">
+                cover = #{cover},
+            </if>
+            <if test="moldId != null">
+                mold_id = #{moldId},
+            </if>
+            <if test="areaId != null">
+                area_id = #{areaId}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <select id="queryAll" resultMap="video">
+        select * from video
+    </select>
+    <select id="findById" parameterType="int" resultMap="video">
+        select * from video where id = #{id}
+    </select>
+    <select id="queryAllAndOthers" resultMap="video">
+        select v.*,m.name mname,m.id mid,ar.name arname,ar.id arid,a.name aname, a.id aid, d.name dname,d.id did
+        from video v
+        left join mold m
+        on v.mold_id = m.id
+        left join area ar
+        on v.area_id = ar.id
+        left join video_actor va
+        on v.id = va.video_id
+        left join actor a
+        on va.actor_id = a.id
+        left join video_director vd
+        on v.id = vd.video_id
+        left join director d
+        on vd.director_id = d.id
+    </select>
+    <select id="findActorById" resultMap="video" parameterType="int">
+        select v.*,a.id aid,a.name aname
+        from video v
+        left join video_actor va
+        on v.id = va.video_id
+        left join actor a
+        on va.actor_id = a.id
+        where v.id = #{id}
+    </select>
+    <select id="findDirectorId" resultMap="video" parameterType="int">
+        select v.*,d.id did,d.name dname
+        from video v
+        left join video_director vd
+        on v.id = vd.video_id
+        left join director d
+        on vd.director_id = d.id
+        where v.id = #{id}
+    </select>
+    <select id="likeVideo" parameterType="Video" resultMap="video">
+        select * from video
+        <where>
+            <if test="name!=null">
+                name like concat("%",#{name},"%")
+            </if>
+            <if test="moldId!=null">
+                and mold_id = #{moldId}
+            </if>
+        </where>
+
+    </select>
+
+</mapper>

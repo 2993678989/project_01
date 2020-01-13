@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhiyou100.mapper.UserMapper">
+
+    <resultMap id="user" type="com.zhiyou100.model.User">
+        <id column="id" property="id"/>
+        <result column="account" property="account"/>
+        <result column="password" property="password"/>
+        <result column="score" property="score"/>
+        <result column="header" property="header"/>
+        <result column="qq" property="qq"/>
+        <result column="email" property="email"/>
+        <result column="phone" property="phone"/>
+        <result column="login_time" property="loginTime"/>
+        <result column="ip" property="ip"/>
+        <collection property="messages" ofType="Message">
+            <id column="id" property="id"/>
+            <result column="content" property="content"/>
+            <result column="status" property="status"/>
+            <result column="user_id" property="userId"/>
+        </collection>
+        <collection property="histories" ofType="History">
+            <id column="id" property="id"/>
+            <result column="user_id" property="userId"/>
+            <result column="movie_id" property="movieId"/>
+        </collection>
+        <collection property="movies" ofType="Movie">
+            <id column="id" property="id"/>
+            <result column="name" property="name"/>
+            <result column="video_id" property="videoId"/>
+            <result column="line_id" property="lineId"/>
+            <result column="url" property="url"/>
+        </collection>
+        <collection property="speakers" ofType="Speaker">
+            <id column="id" property="id"/>
+            <result column="context" property="context"/>
+            <result column="user_id" property="userId"/>
+            <result column="video_id" property="videoId"/>
+            <result column="status" property="status"/>
+        </collection>
+    </resultMap>
+    <select id="queryAll" resultMap="user">
+       select * from user
+    </select>
+    <select id="findById" resultMap="user" parameterType="int">
+        select * from user where id = #{id}
+    </select>
+    <select id="findByAccount" resultMap="user" parameterType="String">
+        select * from user where account = #{account}
+    </select>
+    <insert id="add" parameterType="user">
+        insert into user values
+        (null,#{account},#{password},#{score},#{header},#{qq},#{email},#{phone},now(),#{ip})
+    </insert>
+    <delete id="deleteById" parameterType="int">
+        delete from user where id = #{id}
+    </delete>
+    <update id="update" parameterType="user">
+        update user
+        <set>
+            <if test="password != null">
+                password = #{password},
+            </if>
+            <if test="score != null">
+                score = #{score},
+            </if>
+            <if test="header != null">
+                header = #{header},
+            </if>
+            <if test="qq != null">
+                qq = #{qq},
+            </if>
+            <if test="email != null">
+                email = #{email},
+            </if>
+            <if test="phone != null">
+                phone = #{phone},
+            </if>
+            <if test="loginTime != null">
+                login_time = #{loginTime},
+            </if>
+            <if test="ip != null">
+                ip = #{ip}
+            </if>
+            where id = #{id}
+        </set>
+    </update>
+</mapper>

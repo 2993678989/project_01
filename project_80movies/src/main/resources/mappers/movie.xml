@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhiyou100.mapper.MovieMapper">
+    <resultMap id="movie" type="com.zhiyou100.model.Movie">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="video_id" property="videoId"/>
+        <result column="line_id" property="lineId"/>
+        <result column="url" property="url"/>
+        <collection property="histories" ofType="History">
+            <id column="id" property="id"/>
+            <result column="user_id" property="userId"/>
+            <result column="movie_id" property="movieId"/>
+        </collection>
+        <collection property="lines" ofType="Line">
+            <id column="lid" property="id"/>
+            <result column="lname" property="name"/>
+        </collection>
+        <collection property="users" ofType="User">
+            <id column="id" property="id"/>
+            <result column="account" property="account"/>
+            <result column="password" property="password"/>
+            <result column="score" property="score"/>
+            <result column="header" property="header"/>
+            <result column="qq" property="qq"/>
+            <result column="email" property="email"/>
+            <result column="phone" property="phone"/>
+            <result column="login_time" property="loginTime"/>
+            <result column="ip" property="ip"/>
+        </collection>
+        <collection property="video" ofType="Video">
+            <id column="vid" property="id"/>
+            <result column="vname" property="name"/>
+            <result column="desc" property="desc"/>
+            <result column="year" property="year"/>
+            <result column="play" property="play"/>
+            <result column="score" property="score"/>
+            <result column="cover" property="cover"/>
+            <result column="mold_id" property="moldId"/>
+            <result column="area_id" property="areaId"/>
+        </collection>
+    </resultMap>
+    <insert id="add" parameterType="Movie">
+        insert into movie
+        values(null,#{name},#{videoId},#{lineId},#{url})
+    </insert>
+    <delete id="deleteById" parameterType="int">
+        delete from movie where id = #{id}
+    </delete>
+    <update id="update" parameterType="Movie">
+        update movie
+        <set>
+            <if test="name!=null">
+                name = #{name},
+            </if>
+            <if test="videoId!=null">
+                video_id = #{videoId},
+            </if>
+            <if test="lineId!=null">
+                line_id = #{lineId},
+            </if>
+            <if test="url!=null">
+                url = #{url},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <select id="queryAll" resultMap="movie">
+        select * from movie
+    </select>
+    <select id="findById" parameterType="int" resultMap="movie">
+        select * from movie where id = #{id}
+    </select>
+    <select id="findQueryAll" resultMap="movie">
+        select m.*,v.id vid,v.name vname,l.id lid,l.name lname
+        from movie m
+        left join video v
+        on m.video_id = v.id
+        left join line l
+        on m.line_id = l.id
+    </select>
+    <select id="findQueryAllById" parameterType="int" resultMap="movie">
+        select m.*,v.id vid,v.name vname,l.id lid,l.name lname
+        from movie m
+        left join video v
+        on m.video_id = v.id
+        left join line l
+        on m.line_id = l.id
+        where m.id = #{id}
+    </select>
+
+</mapper>

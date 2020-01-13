@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhiyou100.mapper.LineMapper">
+    <resultMap id="line" type="com.zhiyou100.model.Line">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <collection property="movies" ofType="Movie">
+            <id column="id" property="id"/>
+            <result column="name" property="name"/>
+            <result column="video_id" property="videoId"/>
+            <result column="line_id" property="lineId"/>
+            <result column="url" property="url"/>
+        </collection>
+    </resultMap>
+    <insert id="add" parameterType="Line">
+        insert into line
+        values(null,#{name})
+    </insert>
+    <delete id="deleteById" parameterType="int">
+        delete from line where id = #{id}
+    </delete>
+    <update id="update" parameterType="Line">
+        update line
+        set name = #{name}
+        where id = #{id}
+    </update>
+    <select id="queryAll" resultMap="line">
+        select * from line
+    </select>
+    <select id="findById" parameterType="int" resultMap="line">
+        select * from line where id = #{id}
+    </select>
+
+</mapper>
